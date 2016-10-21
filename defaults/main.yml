@@ -1,0 +1,27 @@
+---
+# User to synchronize as
+sync_cron_username: ""
+# Source path to rsync
+sync_cron_src_path: ""
+# Dest url to sync to. Example: myuser@myhost:/my/path
+sync_cron_dest_url: ""
+# rsync flags to use. defaults is -a
+sync_cron_rsync_flags: "-a"
+# arguments to pass to cron action
+# Use sync_cron_freq, not _sync_cron_freq
+_sync_cron_freq:
+  name: "rsync for {{ sync_cron_src_path }}"
+  minute: 0
+  hour: 0
+  day: "*"
+  weekday: "*"
+  month: "*"
+  disabled: no
+sync_cron_freq: {}
+# Additional commands to execute after each synchronization
+# eg...
+#
+# sync_cron_additional_commands:
+#   - "echo 'yes'"
+#   - "touch myfile"
+sync_cron_additional_commands: []

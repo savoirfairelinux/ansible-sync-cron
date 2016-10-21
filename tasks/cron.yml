@@ -1,0 +1,14 @@
+---
+- set_fact:
+    cron_args: "{{ _sync_cron_freq|combine(sync_cron_freq) }}"
+- name: Setup cron for rsync
+  cron:
+    name: "{{ cron_args.name }}"
+    job: "rsync {{ sync_cron_rsync_flags }} {{ sync_cron_src_path }} {{ sync_cron_dest_url }}{% for c in sync_cron_additional_commands%} && {{ c }}{% endfor %}"
+    user: "{{ sync_cron_username }}"
+    minute: "{{ cron_args.minute }}"
+    hour: "{{ cron_args.hour }}"
+    day: "{{ cron_args.day }}"
+    weekday: "{{ cron_args.weekday }}"
+    month: "{{ cron_args.month }}"
+    disabled: "{{ cron_args.disabled }}"
