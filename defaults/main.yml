@@ -22,6 +22,10 @@ sync_cron_freq: {}
 # eg...
 #
 # sync_cron_additional_commands:
-#   - "echo 'yes'"
+#   - "echo yes"
 #   - "touch myfile"
+#
+# WARNING: When we have additional commands, the cron executes our command chain through
+#          bash -c '{{ cmd }}'. Mind your single quotes! either avoid them or escape them.
+#          http://stackoverflow.com/questions/1250079/how-to-escape-single-quotes-within-single-quoted-strings
 sync_cron_additional_commands: []

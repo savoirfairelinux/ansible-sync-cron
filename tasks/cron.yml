@@ -1,10 +1,21 @@
----
 - set_fact:
     cron_args: "{{ _sync_cron_freq|combine(sync_cron_freq) }}"
+    rsync_cmd: "rsync {{ sync_cron_rsync_flags }} {{ sync_cron_src_path }} {{ sync_cron_dest_url }}"
+
+- set_fact:
+    cron_cmd: "{{ rsync_cmd }}"
+  when: "not sync_cron_additional_commands"
+
+# We can't directly concat commands with &&. We have to wrap them in bash -c ''.
+# see http://askubuntu.com/questions/265209/running-two-commands-in-crontab
+- set_fact:
+    cron_cmd: "bash -c '{{ rsync_cmd }}{% for c in sync_cron_additional_commands%} && {{ c }}{% endfor %}'"
+  when: "sync_cron_additional_commands"
+  
 - name: Setup cron for rsync
   cron:
     name: "{{ cron_args.name }}"
-    job: "rsync {{ sync_cron_rsync_flags }} {{ sync_cron_src_path }} {{ sync_cron_dest_url }}{% for c in sync_cron_additional_commands%} && {{ c }}{% endfor %}"
+    job: "{{ cron_cmd }}"
     user: "{{ sync_cron_username }}"
     minute: "{{ cron_args.minute }}"
     hour: "{{ cron_args.hour }}"
